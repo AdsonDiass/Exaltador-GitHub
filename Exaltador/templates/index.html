@@ -4,33 +4,100 @@
     <meta charset="UTF-8">
     <title>Exaltador de GitHub</title>
     <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        input {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:disabled {
+            background-color: #888;
+        }
+
+        #resultado {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            text-align: left;
+            background: #eee;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Exaltador de Perfis GitHub 🚀</h1>
+        <h1>Exaltador de GitHub 🚀</h1>
         <input type="text" id="githubUser" placeholder="Digite o nome de usuário do GitHub">
-        <button onclick="exaltar()">Exaltar</button>
-        <pre id="resultado"></pre>
+        <br>
+        <button id="btn" onclick="exaltar()">Exaltar</button>
+        <div id="resultado"></div>
     </div>
 
     <script>
         async function exaltar() {
             const user = document.getElementById("githubUser").value;
+            const resultado = document.getElementById("resultado");
+            const btn = document.getElementById("btn");
+
             if (!user) {
-                document.getElementById("resultado").innerText = "Digite um usuário do GitHub.";
+                resultado.innerText = "Digite um usuário do GitHub.";
                 return;
             }
 
-            const resposta = await fetch("/exaltar", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ texto: user })
-            });
+            // Feedback visual
+            btn.disabled = true;
+            btn.innerText = "Exaltando...";
+            resultado.innerText = "🔄 Gerando elogios...";
 
-            const data = await resposta.json();
-            document.getElementById("resultado").innerText = data.resposta;
+            try {
+                const resposta = await fetch("/exaltar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ texto: user })
+                });
+
+                const data = await resposta.json();
+                resultado.innerText = data.resposta;
+            } catch (e) {
+                resultado.innerText = "Erro ao exaltar o perfil 😢";
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Exaltar";
+            }
         }
     </script>
 </body>
