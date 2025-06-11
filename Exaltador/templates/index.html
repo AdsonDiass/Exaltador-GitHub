@@ -91,7 +91,25 @@
                 });
 
                 const data = await resposta.json();
-                resultado.innerText = data.resposta;
+                resultado.innerHTML = `
+  <div class="github-highlight">
+    <div class="profile-header">
+      <img src="${data.avatar_url}" alt="Avatar" class="avatar">
+      <div class="user-info">
+        <h2 class="username">${data.nome}</h2>
+        <p class="subtitle">Estrela em ascensão no GitHub 🌟</p>
+      </div>
+    </div>
+    <div class="highlight-body">
+      <p>${data.resposta}</p>
+    </div>
+    <div class="cta-footer">
+      <a href="https://github.com/${data.usuario}" target="_blank" class="github-btn">🔗 Ver Perfil no GitHub</a>
+      <div class="stars">⭐️⭐️⭐️⭐️⭐️</div>
+    </div>
+  </div>
+`;
+;
             } catch (e) {
                 resultado.innerText = "Erro ao exaltar o perfil 😢";
             } finally {
