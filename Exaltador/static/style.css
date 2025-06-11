@@ -1,47 +1,81 @@
-.highlight-card {
-  background: #ffffff;
+.github-highlight {
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: #f1f1f1;
   padding: 2rem;
-  border-radius: 16px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-  animation: fadeIn 0.6s ease-in-out;
-  max-width: 600px;
-  margin: 0 auto;
-  text-align: center;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  animation: fadeInUp 0.8s ease-in-out;
+  max-width: 600px;
+  margin: 2rem auto 0 auto;
 }
 
-.highlight-card h2 {
-  font-size: 1.8rem;
-  color: #222831;
-  margin-bottom: 0.5rem;
-}
-
-.highlight-card .username {
-  color: #00ADB5;
-  font-weight: bold;
-}
-
-.subtitle {
-  font-size: 1rem;
-  color: #393E46;
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   margin-bottom: 1.5rem;
-  font-style: italic;
 }
 
-.highlight-content p {
-  font-size: 1.05rem;
-  color: #393E46;
-  margin-bottom: 1rem;
+.avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 3px solid #00adb5;
+  box-shadow: 0 0 15px rgba(0, 173, 181, 0.6);
+}
+
+.user-info .username {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #00adb5;
+}
+
+.user-info .subtitle {
+  font-size: 0.95rem;
+  color: #eeeeee;
+  opacity: 0.85;
+}
+
+.highlight-body p {
+  margin: 1rem 0;
   line-height: 1.6;
+  font-size: 1.05rem;
+}
+
+.cta-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+.github-btn {
+  background-color: #00adb5;
+  color: #fff;
+  text-decoration: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.github-btn:hover {
+  background-color: #019ca6;
 }
 
 .stars {
-  margin-top: 1.5rem;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   color: gold;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
