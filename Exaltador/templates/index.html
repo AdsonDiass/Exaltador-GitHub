@@ -1,122 +1,64 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Exaltador de GitHub</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f2f2f2;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+<script>
+    async function exaltar() {
+        const user = document.getElementById("githubUser").value;
+        const resultado = document.getElementById("resultado");
+        const btn = document.getElementById("btn");
+
+        if (!user) {
+            resultado.innerText = "Digite um usuário do GitHub.";
+            return;
         }
 
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            width: 400px;
-            text-align: center;
-        }
+        // Feedback visual
+        btn.disabled = true;
+        btn.innerText = "Exaltando...";
+        resultado.innerText = "🔄 Buscando dados do GitHub...";
 
-        input {
-            width: 80%;
-            padding: 10px;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
+        try {
+            // 👉 Buscar dados do GitHub
+            const perfilResponse = await fetch(`/github/${user}`);
+            const perfil = await perfilResponse.json();
 
-        button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        button:disabled {
-            background-color: #888;
-        }
-
-        #resultado {
-            margin-top: 20px;
-            white-space: pre-wrap;
-            text-align: left;
-            background: #eee;
-            padding: 15px;
-            border-radius: 8px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Exaltador de GitHub 🚀</h1>
-        <input type="text" id="githubUser" placeholder="Digite o nome de usuário do GitHub">
-        <br>
-        <button id="btn" onclick="exaltar()">Exaltar</button>
-        <div id="resultado"></div>
-    </div>
-
-    <script>
-        async function exaltar() {
-            const user = document.getElementById("githubUser").value;
-            const resultado = document.getElementById("resultado");
-            const btn = document.getElementById("btn");
-
-            if (!user) {
-                resultado.innerText = "Digite um usuário do GitHub.";
-                return;
+            if (!perfilResponse.ok) {
+                resultado.innerText = "❌ Usuário não encontrado no GitHub.";
+                throw new Error(perfil.error);
             }
 
-            // Feedback visual
-            btn.disabled = true;
-            btn.innerText = "Exaltando...";
-            resultado.innerText = "🔄 Gerando elogios...";
+            // 👉 Gerar texto de exaltação
+            const resposta = await fetch("/exaltar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ texto: perfil.name || perfil.login })
+            });
 
-            try {
-                const resposta = await fetch("/exaltar", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ texto: user })
-                });
+            const data = await resposta.json();
 
-                const data = await resposta.json();
-                resultado.innerHTML = `
-  <div class="github-highlight">
-    <div class="profile-header">
-      <img src="${data.avatar_url}" alt="Avatar" class="avatar">
-      <div class="user-info">
-        <h2 class="username">${data.nome}</h2>
-        <p class="subtitle">Estrela em ascensão no GitHub 🌟</p>
-      </div>
-    </div>
-    <div class="highlight-body">
-      <p>${data.resposta}</p>
-    </div>
-    <div class="cta-footer">
-      <a href="https://github.com/${data.usuario}" target="_blank" class="github-btn">🔗 Ver Perfil no GitHub</a>
-      <div class="stars">⭐️⭐️⭐️⭐️⭐️</div>
-    </div>
-  </div>
-`;
-;
-            } catch (e) {
-                resultado.innerText = "Erro ao exaltar o perfil 😢";
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "Exaltar";
-            }
+            resultado.innerHTML = `
+            <div class="github-highlight">
+                <div class="profile-header">
+                    <img src="${perfil.avatar_url}" alt="Avatar" class="avatar" width="80" style="border-radius:50%;">
+                    <div class="user-info">
+                        <h2 class="username">${perfil.name || perfil.login}</h2>
+                        <p class="subtitle">${perfil.bio || 'Estrela em ascensão no GitHub 🌟'}</p>
+                    </div>
+                </div>
+                <div class="highlight-body">
+                    <p>${data.resposta}</p>
+                </div>
+                <div class="cta-footer">
+                    <a href="https://github.com/${perfil.login}" target="_blank" class="github-btn">🔗 Ver Perfil no GitHub</a>
+                    <div class="stars">⭐️⭐️⭐️⭐️⭐️</div>
+                </div>
+            </div>
+            `;
+        } catch (e) {
+            console.error(e);
+            resultado.innerText = "Erro ao exaltar o perfil 😢";
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Exaltar";
         }
-    </script>
-</body>
-</html>
+    }
+</script>
