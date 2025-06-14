@@ -4,14 +4,19 @@
     <meta charset="UTF-8">
     <title>Exaltador de GitHub</title>
     <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.0/marked.min.js"></script>
     <style>
+        /* Estilos base do container e input/button (melhor ter aqui ou no style.css) */
         body {
             font-family: Arial, sans-serif;
             background: #f2f2f2;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh; /* Use min-height para permitir rolagem se o conteúdo for longo */
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         .container {
@@ -19,15 +24,20 @@
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            width: 400px;
+            width: 100%;
+            max-width: 450px; /* Aumentado para o cartão caber melhor */
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Adicionado espaçamento entre os elementos */
         }
 
         input {
-            width: 80%;
+            width: calc(100% - 20px); /* Ajuste para padding */
             padding: 10px;
             font-size: 16px;
-            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
 
         button {
@@ -38,79 +48,90 @@
             font-size: 16px;
             cursor: pointer;
             border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
         }
 
         button:disabled {
             background-color: #888;
+            cursor: not-allowed;
         }
 
+        /* O #resultado será o container para o .github-highlight.
+           Remova estilos que conflitem com .github-highlight. */
         #resultado {
-            margin-top: 20px;
-            white-space: pre-wrap;
+            margin-top: 0; /* O .github-highlight já tem margin-top */
+            white-space: normal; /* Permite que o texto quebre linhas normalmente */
             text-align: left;
-            background: #eee;
-            padding: 15px;
-            border-radius: 8px;
-            max-height: 300px;
-            overflow-y: auto;
+            background: none; /* REMOVIDO: Deixe o .github-highlight definir o fundo */
+            padding: 0; /* REMOVIDO: Deixe o .github-highlight definir o padding */
+            border-radius: 0; /* REMOVIDO: Deixe o .github-highlight definir o border-radius */
+            max-height: none; /* REMOVIDO: Permite que o cartão se expanda */
+            overflow-y: visible; /* REMOVIDO: Permite que o cartão se expanda */
         }
 
-        /* Estilo adicional para o resultado */
+        /* Estilos adicionais para o resultado - ATENÇÃO AQUI */
+        /* Estes estilos estão no seu index.html mas também no style.css.
+           É melhor mantê-los APENAS no style.css para evitar conflitos.
+           Vou colocá-los aqui para que funcione com o que você me passou,
+           mas a melhor prática é ter um só lugar. */
+
         .github-highlight {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+            /* Já definido no style.css com fundo escuro e texto claro. */
+            /* Se for sobrescrever aqui, terá que ser cuidadoso. */
+            /* Vou remover os daqui e confiar no style.css */
         }
 
         .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            /* Já definido no style.css */
         }
 
         .avatar {
-            width: 80px;
-            border-radius: 50%;
+            /* Já definido no style.css */
         }
 
-        .username {
-            margin: 0;
+        .user-info .username {
+            /* Já definido no style.css */
         }
 
-        .subtitle {
-            margin: 0;
-            font-size: 14px;
-            color: gray;
+        .user-info .subtitle {
+            /* Já definido no style.css */
         }
 
         .highlight-body {
-            background-color: white;
+            /* Este é o mais importante para o texto do Gemini */
+            background-color: white; /* Você quer fundo branco para o texto */
             padding: 10px;
             border-radius: 8px;
+            color: #333; /* MUDE AQUI: Cor do texto escuro para fundo branco */
+        }
+
+        .highlight-body p { /* Estilo para parágrafos dentro do corpo */
+            margin: 1rem 0;
+            line-height: 1.6;
+            font-size: 1.05rem;
+            color: #333; /* MUDE AQUI: Garante que parágrafos sejam escuros */
         }
 
         .cta-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            /* Já definido no style.css */
         }
 
         .github-btn {
-            text-decoration: none;
-            color: white;
-            background-color: #333;
-            padding: 5px 10px;
-            border-radius: 5px;
+            /* Já definido no style.css */
         }
 
         .stars {
-            font-size: 20px;
+            /* Já definido no style.css */
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Exaltador de GitHub 🚀</h1>
+        <h1>Exaltador de Perfis GitHub 🚀</h1>
         <input type="text" id="githubUser" placeholder="Digite o nome de usuário do GitHub">
         <br>
         <button id="btn" onclick="exaltar()">Exaltar</button>
@@ -124,14 +145,14 @@
             const btn = document.getElementById("btn");
 
             if (!user) {
-                resultado.innerText = "⚠️ Digite um usuário do GitHub.";
+                resultado.innerHTML = "⚠️ Digite um usuário do GitHub.";
                 return;
             }
 
             // Feedback visual
             btn.disabled = true;
             btn.innerText = "Exaltando...";
-            resultado.innerText = "🔄 Buscando dados do GitHub...";
+            resultado.innerHTML = "🔄 Buscando dados do GitHub...";
 
             try {
                 // Buscar dados do GitHub
@@ -149,10 +170,15 @@
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({ texto: perfil.name || perfil.login })
+                    // Mantenha 'perfil.login' aqui para evitar o erro de usuário não encontrado no GitHub
+                    body: JSON.stringify({ texto: perfil.login })
                 });
 
                 const data = await resposta.json();
+
+                // Processa o texto do Gemini com marked.js
+                const exaltedText = data.resposta;
+                const htmlContent = marked.parse(exaltedText); // Converte Markdown para HTML
 
                 resultado.innerHTML = `
                     <div class="github-highlight">
@@ -164,8 +190,7 @@
                             </div>
                         </div>
                         <div class="highlight-body">
-                            <p>${data.resposta}</p>
-                        </div>
+                            ${htmlContent} </div>
                         <div class="cta-footer">
                             <a href="https://github.com/${perfil.login}" target="_blank" class="github-btn">
                                 🔗 Ver Perfil no GitHub
