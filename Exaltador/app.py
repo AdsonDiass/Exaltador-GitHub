@@ -5,21 +5,15 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import httpx # Importado para fazer requisições HTTP
 
-# Certifique-se de que 'models.prompt' e 'services.gemini_service' existem
-# no seu projeto e que os caminhos estão corretos.
 from models.prompt import Prompt
 from services.gemini_service import exaltar_perfil
 
 app = FastAPI()
 
 # Montar arquivos estáticos (CSS/JS)
-# Certifique-se de que você tem uma pasta 'static' na raiz do seu projeto
-# com seus arquivos estáticos dentro.
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Configurar pasta de templates
-# Certifique-se de que você tem uma pasta 'templates' na raiz do seu projeto
-# com seus arquivos HTML (como index.html) dentro.
 templates = Jinja2Templates(directory="templates")
 
 
