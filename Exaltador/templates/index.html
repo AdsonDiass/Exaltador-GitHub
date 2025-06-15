@@ -6,14 +6,14 @@
     <link rel="stylesheet" href="/static/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.0/marked.min.js"></script>
     <style>
-        /* Estilos base do container e input/button (melhor ter aqui ou no style.css) */
+        /* Estilos base do container e input/button */
         body {
             font-family: Arial, sans-serif;
             background: #f2f2f2;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh; /* Use min-height para permitir rolagem se o conteúdo for longo */
+            min-height: 100vh; /* permitir rolagem se o conteúdo for longo */
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
@@ -66,23 +66,18 @@
             margin-top: 0; /* O .github-highlight já tem margin-top */
             white-space: normal; /* Permite que o texto quebre linhas normalmente */
             text-align: left;
-            background: none; /* REMOVIDO: Deixe o .github-highlight definir o fundo */
-            padding: 0; /* REMOVIDO: Deixe o .github-highlight definir o padding */
-            border-radius: 0; /* REMOVIDO: Deixe o .github-highlight definir o border-radius */
+            background: none; /* REMOVIDO: Para o .github-highlight definir o fundo */
+            padding: 0; /* REMOVIDO:  Para o .github-highlight definir o padding */
+            border-radius: 0; /* REMOVIDO: Para o .github-highlight definir o border-radius */
             max-height: none; /* REMOVIDO: Permite que o cartão se expanda */
             overflow-y: visible; /* REMOVIDO: Permite que o cartão se expanda */
         }
 
-        /* Estilos adicionais para o resultado - ATENÇÃO AQUI */
-        /* Estes estilos estão no seu index.html mas também no style.css.
-           É melhor mantê-los APENAS no style.css para evitar conflitos.
-           Vou colocá-los aqui para que funcione com o que você me passou,
-           mas a melhor prática é ter um só lugar. */
+    
 
         .github-highlight {
             /* Já definido no style.css com fundo escuro e texto claro. */
-            /* Se for sobrescrever aqui, terá que ser cuidadoso. */
-            /* Vou remover os daqui e confiar no style.css */
+        
         }
 
         .profile-header {
@@ -102,18 +97,18 @@
         }
 
         .highlight-body {
-            /* Este é o mais importante para o texto do Gemini */
-            background-color: white; /* Você quer fundo branco para o texto */
+            
+            background-color: white; /* fundo branco para o texto */
             padding: 10px;
             border-radius: 8px;
-            color: #333; /* MUDE AQUI: Cor do texto escuro para fundo branco */
+            color: #333; /* Cor do texto escuro para fundo branco */
         }
 
         .highlight-body p { /* Estilo para parágrafos dentro do corpo */
             margin: 1rem 0;
             line-height: 1.6;
             font-size: 1.05rem;
-            color: #333; /* MUDE AQUI: Garante que parágrafos sejam escuros */
+            color: #333; /* Garante que parágrafos sejam escuros */
         }
 
         .cta-footer {
@@ -170,7 +165,7 @@
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    // Mantenha 'perfil.login' aqui para evitar o erro de usuário não encontrado no GitHub
+                    // Manter 'perfil.login' aqui para evitar o erro de usuário não encontrado no GitHub
                     body: JSON.stringify({ texto: perfil.login })
                 });
 
