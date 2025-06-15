@@ -118,7 +118,6 @@ async def exaltar_perfil(usuario: str):
 
 
 
-# ... (código existente) ...
 
 async def chamar_gemini(texto: str) -> str:
     headers = {
@@ -140,18 +139,15 @@ async def chamar_gemini(texto: str) -> str:
         ]
     }
 
-    # --- ADICIONE ESTAS LINHAS DE DEPURACÃO AQUI ---
     print(f"DEBUG_GEMINI_PROMPT: Prompt completo enviado ao Gemini: {body['contents'][0]['parts'][0]['text'][:500]}...") # Imprime os primeiros 500 caracteres
-    # -----------------------------------------------
 
     async with httpx.AsyncClient() as client:
         response = await client.post(GEMINI_URL, headers=headers, json=body)
         response.raise_for_status()
         resultado = response.json()
 
-        # --- ADICIONE ESTAS LINHAS DE DEPURACÃO AQUI ---
         print(f"DEBUG_GEMINI_RAW_RESPONSE: Resposta bruta do Gemini: {resultado}")
-        # -----------------------------------------------
+ 
 
         try:
             final_text = resultado["candidates"][0]["content"]["parts"][0]["text"]
@@ -162,4 +158,3 @@ async def chamar_gemini(texto: str) -> str:
             raise Exception("Erro ao processar a resposta do Gemini. Verifique sua chave API ou o conteúdo enviado.")
 
 
-# ... (restante do código) ...
